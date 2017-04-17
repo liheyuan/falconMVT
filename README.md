@@ -2,5 +2,5 @@
 
 # Install
 ```
-sudo pip install falcon PyJWT
+sudo pip install falcon PyJWT jsonpickle
 ```
