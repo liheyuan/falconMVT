@@ -7,8 +7,8 @@ from service.account_service import AccountService
 from const.const import *
 
 class LoginResource:
-     def on_get(self, req, resp):
-         username = req.params.get("user", "") 
+     def on_post(self, req, resp):
+         username = req.params.get("username", "") 
          passhash = req.params.get("passhash", "") 
          userObj = AccountService.getUser(username, passhash)
          if userObj is None:

@@ -12,5 +12,5 @@ api.add_route('/test/noneedauth', test_api.TestNoNeedAuthResource())
 api.add_route('/test/needauth', test_api.TestNeedAuthResource())
 
 if __name__ == "__main__":
-    httpd = simple_server.make_server('', 8000, api)
+    httpd = simple_server.make_server('', 80, api)
     httpd.serve_forever()

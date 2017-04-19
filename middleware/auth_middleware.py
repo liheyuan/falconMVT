@@ -18,14 +18,12 @@ class AuthMiddleware(object):
         else:
             # check if valid
             tp = AccountService.parsePayload(payloadObj)
-            print tp
             if not tp:
                 # parse payload fail
                 raise falcon.HTTPUnauthorized()
             else:
                 (userId, tmp) = tp
                 req.params[UserIdParamKey] = userId
-                print userId
                 # check if need refresh
                 if AccountService.autoRefreshJwt(payloadObj):
                     resp.set_cookie(JwtCookieKey, jwtStr, max_age = JwtCookieAge, path = "/", secure = False)

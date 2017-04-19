@@ -8,7 +8,7 @@ from model.account_model import AccountModel
 
 
 def hashPass(passraw):
-    Salt = 'falconMVT_'
+    Salt = 'C4MVT_'
     return hashlib.sha256(Salt + passraw).hexdigest()
 
 TestUserDict = {
@@ -27,7 +27,6 @@ class AccountService:
         storePassHash = TestUserDict.get(username, "")
         if storePassHash == "":
             # user not exist
-            resp.status = falcon.HTTP_401
             return None
         else:
             # user exist, check pass
@@ -61,8 +60,6 @@ class AccountService:
             if userId != None and userName != None:
                 return (userId, userName)
         except:
-            import traceback
-            print traceback.print_exc()
             return None
 
     @staticmethod
