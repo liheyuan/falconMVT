@@ -19,6 +19,7 @@ TestUserDict = {
 JwtSecret = "falconMVTJWTSecret"
 JwtAlgo = "HS256"
 JwtExpKey = "jwtExp"
+JwtExpSeconds = 5 * 60
 
 class AccountService:
 
@@ -37,13 +38,18 @@ class AccountService:
 
     @staticmethod
     def genJwtExpTs():
-        return int(time.time()) + 15 * 60
+        return int(time.time()) + JwtExpSeconds 
 
     @staticmethod
     def encodeJwt(user):
         payloadDict = json.loads(user.toJson())
         payloadDict[JwtExpKey] = AccountService.genJwtExpTs() 
         return jwt.encode(payloadDict, JwtSecret, algorithm=JwtAlgo)
+
+    @staticmethod
+    def refreshJwt(plDict):
+        plDict[JwtExpKey] = AccountService.genJwtExpTs()
+        return jwt.encode(plDict, JwtSecret, algorithm=JwtAlgo)
 
     @staticmethod
     def decodeJwt(encryptStr):
@@ -63,15 +69,19 @@ class AccountService:
             return None
 
     @staticmethod
-    def autoRefreshJwt(plDict):
+    def needRefreshJwt(plDict):
         try:
             exp = plDict.get(JwtExpKey, None)
             if exp and int(exp) <= int(time.time()):
-                # exp & always allowed refresh
-                plDict[jwtExpKey] = AccountService.genJwtExpTs()
                 return True
             else:
                 # not exp
                 return False
         except:
             return False
+
+    @staticmethod
+    def allowRefreshJwt(plDict):
+        # Simply always allow refresh
+        # You can query db to make your single point login strategy 
+        return True 

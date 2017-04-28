@@ -25,8 +25,13 @@ class AuthMiddleware(object):
                 (userId, tmp) = tp
                 req.params[UserIdParamKey] = userId
                 # check if need refresh
-                if AccountService.autoRefreshJwt(payloadObj):
-                    resp.set_cookie(JwtCookieKey, jwtStr, max_age = JwtCookieAge, path = "/", secure = False)
+                if AccountService.needRefreshJwt(payloadObj):
+                    if AccountService.allowRefreshJwt(payloadObj):
+                        newJwtStr = AccountService.refreshJwt(payloadObj)
+                        resp.set_cookie(JwtCookieKey, newJwtStr, max_age = JwtCookieAge, path = "/", secure = False)
+                    else:
+                        # refresh token fail
+                        raise falcon.HTTPUnauthorized()
 
     def is_path_whitelist(self, path):
         return path == "/account/login" or path == "/test/noneedauth"
